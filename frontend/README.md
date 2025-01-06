@@ -18,6 +18,8 @@ Interface for Cookbook AI, application that can give You recipe based on ingredi
 npm install
 ```
 
+- Setup ENV variables from root of the project (../.env.sample).
+
 - Run server
 
 ```

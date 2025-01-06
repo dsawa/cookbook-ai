@@ -1,11 +1,12 @@
 interface ButtonProps {
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  disabled?: boolean;
   children: React.ReactNode;
 }
 
-export const Button = ({ onClick, children }: ButtonProps) => {
+export const Button = ({ onClick, disabled, children }: ButtonProps) => {
   return (
-    <button onClick={onClick} className="btn btn-primary">
+    <button disabled={disabled} onClick={onClick} className="btn btn-primary">
       {children}
     </button>
   );

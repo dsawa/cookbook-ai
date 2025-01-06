@@ -13,6 +13,8 @@
 bundle install
 ```
 
+- Setup ENV variables from root of the project (../.env.sample).
+
 - Run app
 
 ```
