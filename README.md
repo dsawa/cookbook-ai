@@ -13,4 +13,3 @@ The general idea behind this application is to provide a simple interface where 
 
 Check .env.sample for needed environment variables for each application.
 To not duplicate .env files during development it's good to use some tool like [direnv](https://direnv.net).
-

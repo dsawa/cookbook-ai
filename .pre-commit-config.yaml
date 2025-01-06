@@ -1,0 +1,33 @@
+# See https://pre-commit.com for more information
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-added-large-files
+      - id: check-case-conflict
+      - id: check-json
+      - id: detect-private-key
+
+  - repo: https://github.com/rubocop/rubocop
+    rev: v1.69.2
+    hooks:
+      - id: rubocop
+        args: ['--autocorrect']
+        files: '^backend/.*\.rb$'
+
+  - repo: https://github.com/pre-commit/mirrors-eslint
+    rev: v8.56.0
+    hooks:
+      - id: eslint
+        files: '^frontend/.*\.[jt]sx?$'
+        types: [file]
+        args: ['--fix', '--config', 'frontend/eslint.config.js']
+        additional_dependencies:
+          - eslint@9.17.0
+          - '@eslint/js@9.17.0'
+          - 'eslint-plugin-react@7.37.3'
+          - 'eslint-plugin-react-hooks@5.0.0'
+          - 'eslint-plugin-react-refresh@0.4.16'
+          - 'typescript-eslint@8.18.2'
