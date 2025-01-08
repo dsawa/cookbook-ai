@@ -15,6 +15,8 @@ bundle install
 
 - Setup ENV variables from root of the project (../.env.sample).
 
+To get `ANTHROPIC_API_KEY`, login to anthropic console account and generate it from: https://console.anthropic.com/account/keys
+
 - Run app
 
 ```

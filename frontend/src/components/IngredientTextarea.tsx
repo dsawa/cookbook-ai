@@ -1,12 +1,16 @@
 import { ChangeEvent } from "react";
 
-interface Props {
+interface IngredientTextareaProps {
   value: string;
   disabled?: boolean;
   onChange: (e: ChangeEvent<HTMLTextAreaElement>) => void;
 }
 
-export const IngredientTextarea = ({ value, disabled, onChange }: Props) => {
+export const IngredientTextarea = ({
+  value,
+  disabled,
+  onChange,
+}: IngredientTextareaProps) => {
   return (
     <div className="mb-3">
       <label htmlFor="ingredients" className="form-label">
@@ -17,7 +21,7 @@ export const IngredientTextarea = ({ value, disabled, onChange }: Props) => {
         className="form-control"
         value={value}
         onChange={onChange}
-        rows={6}
+        rows={4}
         disabled={disabled}
       />
     </div>
