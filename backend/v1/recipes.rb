@@ -12,6 +12,20 @@ module V1
       def logger
         API.logger
       end
+
+      def authenticate!
+        auth_header = headers['Authorization']
+        token = auth_header&.match(/^Bearer (.+)$/)&.[](1)
+        allowed_tokens = ENV['ALLOWED_API_TOKENS'].split(',')
+
+        return if token && allowed_tokens.include?(token)
+
+        error!('401 Unauthorized', 401)
+      end
+    end
+
+    before do
+      authenticate!
     end
 
     get '/ping' do

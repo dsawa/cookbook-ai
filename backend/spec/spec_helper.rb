@@ -1,7 +1,9 @@
 require 'rspec'
+require 'rack/test'
 require 'climate_control'
 require 'retryable'
 require 'debug'
+require 'grape'
 
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
@@ -87,7 +89,7 @@ RSpec.configure do |config|
   end
 
   config.around do |example|
-    ClimateControl.modify(ANTHROPIC_API_KEY: 'ANTHROPIC_API_TEST_KEY') do
+    ClimateControl.modify(ALLOWED_API_TOKENS: 'Test,Example', ANTHROPIC_API_KEY: 'ANTHROPIC_API_TEST_KEY') do
       example.run
     end
   end
