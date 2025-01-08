@@ -102,6 +102,8 @@ describe RecipeValidateService do
       let(:claude_response) { { "valid" => true }.to_json }
 
       before do
+        expect(Retryable).to receive(:retryable).with(tries: 3, not: [ BaseAnthropicService::ClaudeConnectionError ]).and_call_original
+        expect(Retryable).to receive(:retryable).with(tries: 3, on: [ Faraday::Error ]).and_call_original
         expect(anthropic_client).to receive(:messages).with(anthropic_request_params).and_return(anthropic_response)
       end
 
@@ -126,6 +128,8 @@ describe RecipeValidateService do
 
       context 'on instructions level that needs to be checked with anthropic' do
         before do
+          expect(Retryable).to receive(:retryable).with(tries: 3, not: [ BaseAnthropicService::ClaudeConnectionError ]).and_call_original
+          expect(Retryable).to receive(:retryable).with(tries: 3, on: [ Faraday::Error ]).and_call_original
           expect(anthropic_client).to receive(:messages).with(anthropic_request_params).and_return(anthropic_response)
         end
 
@@ -147,7 +151,7 @@ describe RecipeValidateService do
       context 'anthropic api responds with an error' do
         it "passes error further" do
           expect(anthropic_client).to receive(:messages).and_raise(Faraday::Error)
-          expect { subject.call }.to raise_error(Faraday::Error)
+          expect { subject.call }.to raise_error(BaseAnthropicService::ClaudeConnectionError)
         end
       end
     end

@@ -6,6 +6,9 @@ class BaseAnthropicService
   ANTHROPIC_VERSION = "2023-06-01".freeze
   ANTHROPIC_MODEL = "claude-3-5-sonnet-20241022".freeze
 
+  Error = Class.new(StandardError)
+  ClaudeConnectionError = Class.new(Error)
+
   def call
     raise NotImplementedError, "Implement method in child class"
   end
@@ -13,7 +16,7 @@ class BaseAnthropicService
   protected
 
   def ask_claude
-    raise ArgumentError, "Prompt cannot be blank" if prompt.nil? || prompt.empty?
+    raise ArgumentError, "Prompt cannot be blank" if prompt.blank?
 
     Retryable.retryable(tries: 3, on: [ Faraday::Error ]) do
       anthropic_client.messages(
@@ -30,6 +33,8 @@ class BaseAnthropicService
         }
       )
     end
+  rescue Faraday::Error => e
+    raise ClaudeConnectionError, e.message
   end
 
   def prompt

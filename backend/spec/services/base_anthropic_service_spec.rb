@@ -79,7 +79,7 @@ describe BaseAnthropicService do
       it "retries the request 3 times" do
         expect(Retryable).to receive(:retryable).with(tries: 3, on: [ Faraday::Error ]).and_call_original
         expect(anthropic_client).to receive(:messages).and_raise(Faraday::Error)
-        expect { subject.call }.to raise_error(Faraday::Error)
+        expect { subject.call }.to raise_error(BaseAnthropicService::ClaudeConnectionError)
       end
     end
   end

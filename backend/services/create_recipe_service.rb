@@ -3,8 +3,6 @@ require_relative './base_anthropic_service'
 require_relative '../models/recipe'
 
 class CreateRecipeService < BaseAnthropicService
-  Error = Class.new(StandardError)
-  ClaudeConnectionError = Class.new(Error)
   InvalidIngredientsError = Class.new(Error)
 
   attr_reader :ingredients, :logger
@@ -17,14 +15,11 @@ class CreateRecipeService < BaseAnthropicService
   end
 
   def call
-    Retryable.retryable(tries: 3, not: [ Faraday::Error ]) do
+    Retryable.retryable(tries: 3, not: [ ClaudeConnectionError ]) do
       logger&.info("Asking Claude for recipe with: #{ingredients}")
       response = ask_claude
       build_recipe(response)
     end
-  rescue Faraday::Error => e
-    logger&.error("Could not connect to Claude: #{e.message}")
-    raise ClaudeConnectionError, e.message
   end
 
   protected

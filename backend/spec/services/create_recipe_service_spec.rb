@@ -109,7 +109,7 @@ describe CreateRecipeService do
 
     context 'anthropic api responds with an error' do
       it "passes raises internal error to gracefully return 500" do
-        expect(Retryable).to receive(:retryable).with(tries: 3, not: [ Faraday::Error ]).and_call_original
+        expect(Retryable).to receive(:retryable).with(tries: 3, not: [ BaseAnthropicService::ClaudeConnectionError ]).and_call_original
         expect(Retryable).to receive(:retryable).with(tries: 3, on: [ Faraday::Error ]).and_call_original
         expect(anthropic_client).to receive(:messages).and_raise(Faraday::Error)
         expect { subject.call }.to raise_error(CreateRecipeService::Error)
@@ -148,7 +148,7 @@ describe CreateRecipeService do
         [ nil, "some text" ].each do |value|
           let(:claude_response) { value }
           it 'passes error further after tryouts' do
-            expect(Retryable).to receive(:retryable).with(tries: 3, not: [ Faraday::Error ]).and_call_original
+            expect(Retryable).to receive(:retryable).with(tries: 3, not: [ BaseAnthropicService::ClaudeConnectionError ]).and_call_original
             expect(Retryable).to receive(:retryable).with(tries: 3, on: [ Faraday::Error ]).and_call_original
             expect { subject.call }.to raise_error(CreateRecipeService::Error, /Could not parse response/)
           end
