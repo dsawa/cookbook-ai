@@ -7,6 +7,7 @@ gem "anthropic", "~> 0.3.2"
 gem "rack-cors", "~> 2.0"
 gem "activemodel", "~> 8.0"
 gem "retryable", "~> 3.0"
+gem "rubocop", "~> 1.69", require: false
 
 group :development, :test do
   gem "debug", '~> 1', require: false
