@@ -10,7 +10,7 @@ module V1
 
     helpers do
       def logger
-        API.logger
+        Recipes.logger
       end
 
       def authenticate!
@@ -24,15 +24,13 @@ module V1
       end
     end
 
-    before do
-      authenticate!
-    end
-
     get '/ping' do
       { message: 'pong' }
     end
 
     post '/recipes' do
+      authenticate!
+
       params do
         requires :ingredients, type: Array[String]
       end
@@ -51,8 +49,11 @@ module V1
           status: 400,
           detail: details,
           errors: recipe.errors
-         }
+        }
       end
+    rescue ArgumentError => e
+      status 400
+      { title: e.message, status: 400, detail: e.message }
     end
   end
 end
