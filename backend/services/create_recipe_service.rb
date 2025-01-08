@@ -5,14 +5,16 @@ require_relative '../models/recipe'
 class CreateRecipeService < BaseAnthropicService
   Error = Class.new(StandardError)
 
-  attr_reader :ingredients
+  attr_reader :ingredients, :logger
 
-  def initialize(ingredients)
+  def initialize(ingredients, logger: nil)
     @ingredients = ingredients
+    @logger = logger
   end
 
   def call
     Retryable.retryable(tries: 3, not: [ Faraday::Error ]) do
+      logger&.info("Asking Claude for recipe with: #{ingredients}")
       response = ask_claude
       build_recipe(response)
     end
@@ -38,6 +40,8 @@ class CreateRecipeService < BaseAnthropicService
 
     Recipe.new(parsed)
   rescue JSON::ParserError, ArgumentError => e
-    raise Error, "Could not parse response: #{e.message}"
+    message = "Could not parse response: #{e.message}"
+    logger&.error(message)
+    raise Error, message
   end
 end

@@ -10,7 +10,7 @@ gem "retryable", "~> 3.0"
 gem "rubocop", "~> 1.69", require: false
 
 group :development, :test do
-  gem "debug", '~> 1', require: false
-  gem "rspec", '~> 3', require: false
+  gem "debug", "~> 1", require: false
+  gem "rspec", "~> 3", require: false
   gem "climate_control", "~> 1.2"
 end

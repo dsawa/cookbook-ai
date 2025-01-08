@@ -1,24 +1,28 @@
 require_relative './base_anthropic_service'
 
 class RecipeValidateService < BaseAnthropicService
-  attr_reader :recipe
+  attr_reader :recipe, :logger
 
-  def initialize(recipe)
+  def initialize(recipe, logger: nil)
     @recipe = recipe
+    @logger = logger
   end
 
   def call
     return false unless recipe.valid?
 
+    logger&.info("Asking Claude to validate recipe..")
     response = ask_claude
     answer = response.dig("content", 0, "text")&.downcase
     answer_parsed = JSON.parse(answer)
 
     return true if answer_parsed["valid"]
 
+    logger&.error("Recipe is not valid: #{recipe.as_json}")
     recipe.errors.add(:base, "Recipe is not valid")
     false
   rescue JSON::ParserError
+    logger&.error("Could not parse Claude response on validation: #{response.inspect}")
     recipe.errors.add(:base, "Couldn't check if recipe is valid. Probably invalid")
     false
   end

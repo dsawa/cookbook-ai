@@ -13,8 +13,7 @@ export const IngredientsForm = ({ onSuccess }: IngredientsFormProps) => {
   const [waitingState, setWaitingState] = useState<boolean>(false);
   const [recipeLoaded, setRecipeLoaded] = useState<boolean>(false);
 
-  const handleErrorSubmit: (error: Error) => void = (error) => {
-    console.error(error);
+  const handleErrorSubmit: (error: Error) => void = () => {
     setWaitingState(false);
   };
 
@@ -46,7 +45,12 @@ export const IngredientsForm = ({ onSuccess }: IngredientsFormProps) => {
       },
       body: JSON.stringify({ ingredients }),
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Request failed with: ${response.status}`);
+        }
+        return response.json();
+      })
       .then(handleSuccessSubmit)
       .catch(handleErrorSubmit);
   };
