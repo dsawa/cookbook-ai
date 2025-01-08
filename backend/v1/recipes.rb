@@ -51,9 +51,13 @@ module V1
           errors: recipe.errors
         }
       end
-    rescue ArgumentError => e
+    rescue CreateRecipeService::InvalidIngredientsError => e
       status 400
       { title: e.message, status: 400, detail: e.message }
+    rescue CreateRecipeService::Error => e
+      logger.error("Recipe creation failed #{e.class}: #{e.message}")
+      status 500
+      { title: 'Internal Server Error', status: 500 }
     end
   end
 end

@@ -12,7 +12,7 @@ describe CreateRecipeService do
   end
   subject { described_class.new(ingredients) }
 
-  let(:ingredients) { "flour, sugar, butter, milk" }
+  let(:ingredients) { %w[flour sugar butter milk] }
   let(:anthropic_client) { instance_double(Anthropic::Client) }
   let(:anthropic_response) do
     {
@@ -80,10 +80,10 @@ describe CreateRecipeService do
     end
 
     context 'invalid ingredients' do
-      [ nil, "" ].each do |value|
+      [ nil, "", [ '' ] ].each do |value|
         let(:ingredients) { value }
-        it "raises ArgumentError if ingredients are #{value}" do
-          expect { subject.send(:prompt) }.to raise_error(ArgumentError, "Ingredients cannot be blank")
+        it "raises InvalidIngredientsError if ingredients are #{value}" do
+          expect { subject.send(:prompt) }.to raise_error(CreateRecipeService::InvalidIngredientsError, "Ingredients cannot be blank")
         end
       end
     end
@@ -108,11 +108,11 @@ describe CreateRecipeService do
     end
 
     context 'anthropic api responds with an error' do
-      it "passes error further" do
+      it "passes raises internal error to gracefully return 500" do
         expect(Retryable).to receive(:retryable).with(tries: 3, not: [ Faraday::Error ]).and_call_original
         expect(Retryable).to receive(:retryable).with(tries: 3, on: [ Faraday::Error ]).and_call_original
         expect(anthropic_client).to receive(:messages).and_raise(Faraday::Error)
-        expect { subject.call }.to raise_error(Faraday::Error)
+        expect { subject.call }.to raise_error(CreateRecipeService::Error)
       end
     end
 

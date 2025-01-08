@@ -30,11 +30,15 @@ export const IngredientsForm = ({ onSuccess }: IngredientsFormProps) => {
       return;
     }
 
-    // TODO: Authenticate request with JWT ?
     setWaitingState(true);
 
     const token: string = import.meta.env.VITE_API_TOKEN;
     const url: string = import.meta.env.VITE_API_URL;
+
+    const ingredientsArray = ingredients
+      .split(",")
+      .map((ingredient) => ingredient.trim())
+      .filter((ingredient) => ingredient !== "");
 
     fetch(url + "/recipes", {
       method: "POST",
@@ -43,7 +47,7 @@ export const IngredientsForm = ({ onSuccess }: IngredientsFormProps) => {
         Accept: "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ ingredients }),
+      body: JSON.stringify({ ingredients: ingredientsArray }),
     })
       .then((response) => {
         if (!response.ok) {

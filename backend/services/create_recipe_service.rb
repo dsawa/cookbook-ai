@@ -4,10 +4,14 @@ require_relative '../models/recipe'
 
 class CreateRecipeService < BaseAnthropicService
   Error = Class.new(StandardError)
+  ClaudeConnectionError = Class.new(Error)
+  InvalidIngredientsError = Class.new(Error)
 
   attr_reader :ingredients, :logger
 
   def initialize(ingredients, logger: nil)
+    ingredients.map!(&:presence).compact! if ingredients.respond_to?(:map!)
+
     @ingredients = ingredients
     @logger = logger
   end
@@ -18,12 +22,15 @@ class CreateRecipeService < BaseAnthropicService
       response = ask_claude
       build_recipe(response)
     end
+  rescue Faraday::Error => e
+    logger&.error("Could not connect to Claude: #{e.message}")
+    raise ClaudeConnectionError, e.message
   end
 
   protected
 
   def prompt
-    raise ArgumentError, "Ingredients cannot be blank" if ingredients.nil? || ingredients.empty?
+    raise InvalidIngredientsError, "Ingredients cannot be blank" if ingredients.blank?
 
     <<~PROMPT
       I have #{ingredients}. Please provide me a recipe using these ingredients.
