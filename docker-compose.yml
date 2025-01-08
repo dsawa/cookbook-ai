@@ -6,8 +6,9 @@ services:
     ports:
       - "9292:9292"
     environment:
-      - RACK_ENV=${RACK_ENV}
+      - RACK_ENV=${RACK_ENV-development}
       - ALLOWED_API_TOKENS=${ALLOWED_API_TOKENS}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
     volumes:
       - ./backend:/app
     restart: unless-stopped
@@ -19,7 +20,7 @@ services:
     ports:
       - "5173:5173"
     environment:
-      - NODE_ENV=development
+      - NODE_ENV=${NODE_ENV-development}
       - VITE_API_TOKEN=${VITE_API_TOKEN}
       - VITE_API_URL=${VITE_API_URL}
     volumes:
