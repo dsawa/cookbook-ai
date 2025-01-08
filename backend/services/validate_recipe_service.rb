@@ -1,6 +1,6 @@
 require_relative './base_anthropic_service'
 
-class RecipeValidateService < BaseAnthropicService
+class ValidateRecipeService < BaseAnthropicService
   attr_reader :recipe, :logger
 
   def initialize(recipe, logger: nil)

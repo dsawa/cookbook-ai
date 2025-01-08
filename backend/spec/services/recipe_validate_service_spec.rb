@@ -2,9 +2,9 @@
 
 require_relative '../spec_helper'
 require_relative '../../models/recipe'
-require_relative '../../services/recipe_validate_service'
+require_relative '../../services/validate_recipe_service'
 
-describe RecipeValidateService do
+describe ValidateRecipeService do
   describe 'ancestors' do
     it 'inherits from BaseAnthropicService' do
       expect(described_class.ancestors).to include(BaseAnthropicService)

@@ -77,7 +77,7 @@ describe V1::Recipes, type: :request do
         )
       end
       let(:create_service) { instance_double(CreateRecipeService) }
-      let(:validate_service) { instance_double(RecipeValidateService) }
+      let(:validate_service) { instance_double(ValidateRecipeService) }
 
       context 'when recipe creation succeeds' do
         before do
@@ -87,7 +87,7 @@ describe V1::Recipes, type: :request do
 
         context 'when recipe validation succeeds' do
           before do
-            expect(RecipeValidateService).to receive(:new).with(recipe, logger: app.logger).and_return(validate_service)
+            expect(ValidateRecipeService).to receive(:new).with(recipe, logger: app.logger).and_return(validate_service)
             expect(validate_service).to receive(:call).and_return(true)
           end
 
@@ -106,7 +106,7 @@ describe V1::Recipes, type: :request do
 
         context 'when recipe validation fails' do
           before do
-            expect(RecipeValidateService).to receive(:new).with(recipe, logger: app.logger).and_return(validate_service)
+            expect(ValidateRecipeService).to receive(:new).with(recipe, logger: app.logger).and_return(validate_service)
             expect(validate_service).to receive(:call).and_return(false)
           end
 

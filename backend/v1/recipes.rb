@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require_relative '../services/create_recipe_service'
-require_relative '../services/recipe_validate_service'
+require_relative '../services/validate_recipe_service'
 
 module V1
   class Recipes < Grape::API
@@ -37,7 +37,7 @@ module V1
 
       recipe = CreateRecipeService.new(params[:ingredients], logger:).call
 
-      if RecipeValidateService.new(recipe, logger:).call
+      if ValidateRecipeService.new(recipe, logger:).call
         recipe.as_json
       else
         details = recipe.errors.full_messages.join(", ")
