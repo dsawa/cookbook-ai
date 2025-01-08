@@ -1,0 +1,22 @@
+{
+    "folders": [
+      {
+        "name": "cookbook-ai",
+        "path": ".",
+      },
+      {
+        "name": "backend-app",
+        "path": "backend",
+      },
+      {
+        "name": "frontend-app",
+        "path": "frontend",
+      },
+    ],
+    "settings": {
+      "files.exclude": {
+        "backend": true,
+        "frontend": true,
+      }
+    }
+  }
