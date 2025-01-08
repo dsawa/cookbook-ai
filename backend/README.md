@@ -26,3 +26,9 @@ bundle exec rackup
 ```
 curl "http://localhost:9292/api/v1/ping"
 ```
+
+## Running tests
+
+```
+rspec
+```
