@@ -2,7 +2,8 @@
 # check=error=true
 
 ARG RUBY_VERSION=3.3.6
-FROM docker.io/library/ruby:$RUBY_VERSION-slim AS base
+
+FROM docker.io/library/ruby:$RUBY_VERSION-slim AS build
 
 WORKDIR /app
 
@@ -10,20 +11,24 @@ RUN apt-get update -qq
 
 ENV BUNDLE_PATH="/usr/local/bundle"
 
-FROM base AS build
-
+# hadolint ignore=DL3008
 RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y build-essential git && \
-    rm -rf /var/lib/apt/lists /var/cache/apt/archives
+    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
 COPY Gemfile Gemfile.lock ./
+
 RUN bundle install && \
     rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git
+
 COPY . .
 
-FROM base AS app
+FROM docker.io/library/ruby:$RUBY_VERSION-slim AS app
 
-ENV BIND=0.0.0.0
+WORKDIR /app
+
+ENV BUNDLE_PATH="/usr/local/bundle" \
+    BIND=0.0.0.0
 
 COPY --from=build "${BUNDLE_PATH}" "${BUNDLE_PATH}"
 COPY --from=build /app /app

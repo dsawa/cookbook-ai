@@ -2,25 +2,26 @@
 # check=error=true
 
 ARG NODE_VERSION=23.5.0
-FROM docker.io/library/node:$NODE_VERSION-slim AS base
+FROM docker.io/library/node:$NODE_VERSION-slim AS build
 
 WORKDIR /app
 
-RUN apt-get update -qq
-
-FROM base AS build
-
+# hadolint ignore=DL3008
 RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y build-essential git && \
-    rm -rf /var/lib/apt/lists /var/cache/apt/archives
+    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
 COPY package*.json ./
+
 RUN npm install
+
 COPY . .
 
-FROM base AS app
+FROM docker.io/library/node:$NODE_VERSION-slim AS app
 
 ENV BIND=0.0.0.0
+
+WORKDIR /app
 
 COPY --from=build /app /app
 
